@@ -5,6 +5,15 @@ import QuoteItem from './QuoteItem';
 import classes from './QuoteList.module.css';
 
 const QuoteList = (props) => {
+  const sortQuotes = (quotes, ascending) => {
+    return quotes.sort((quoteA, quoteB) => {
+      if (ascending) {
+        return quoteA.id > quoteB.id ? 1 : -1;
+      } else {
+        return quoteA.id < quoteB.id ? 1 : -1;
+      }
+    });
+  };
   const history = useHistory();
 
   // allows us to get the query param data
@@ -13,6 +22,8 @@ const QuoteList = (props) => {
   const queryparams = new URLSearchParams(location.search);
 
   const isSortingAscending = queryparams.get('sort') === 'asc';
+
+  const sortedList = sortQuotes(props.quotes, isSortingAscending);
 
   const changeSortingHandler = () => {
     // basically changing the url to add query params
@@ -29,7 +40,7 @@ const QuoteList = (props) => {
         </button>
       </div>
       <ul className={classes.list}>
-        {props.quotes.map((quote) => (
+        {sortedList.map((quote) => (
           <QuoteItem
             key={quote.id}
             id={quote.id}
